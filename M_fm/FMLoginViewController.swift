@@ -11,19 +11,33 @@ import Alamofire
 import SwiftyJSON
 
 class FMLoginViewController: UIViewController {
-    var channels = [DBChannel]()
-    var channelSongDictionary = [DBChannel: DBSongList]()
-    var currentTrack: DBSong?
-    var downloadButton: MZButtonProgressView!
-    var hasDownload = false
-
     @IBOutlet weak var playerView: UIView!
     @IBOutlet weak var trackImageView: UIImageView!
+    @IBOutlet weak var trackLargeImageView: UIImageView!
+    @IBOutlet weak var trackNameLabel: UILabel!
+    @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var progressView: UIView!
     @IBOutlet weak var progressViewWidthConstraint: NSLayoutConstraint!
 
+    var channels = [DBChannel]()
+    var channelSongDictionary = [DBChannel: DBSongList]()
+    var currentTrack: DBSong? {
+        didSet {
+            trackNameLabel.text = currentTrack?.albumtitle
+            artistLabel.text = currentTrack?.artist
+        }
+    }
+    var downloadButton: MZButtonProgressView!
+    var hasDownload = false
+
     //IBActions
     @IBAction func playButtonPressed(sender: UIButton) {
+        if let currentTrack = currentTrack {
+            if currentTrack.filePath != "" {
+                print("currentTrack.filePath: \(currentTrack.filePath)")
+                DBPlayer.sharedPlayer.playMP3File(withFilePath: currentTrack.filePath)
+            }
+        }
     }
     
     @IBAction func nextButtonPressed(sender: UIButton) {
@@ -33,27 +47,37 @@ class FMLoginViewController: UIViewController {
         if hasDownload == true {
             return
         } else {
-            sender.transformToPrograssBar()
             hasDownload = true
         }
         print("downloadButtonPressed")
-        Alamofire.download(.GET, (self.channelSongDictionary[self.channels[1]]?.songs[0].mp3URL)!) { (tmpURL, res) -> NSURL in
-            let fileManager = NSFileManager.defaultManager()
-            let directoryURL = fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
-            let pathComponent = res.suggestedFilename
-            let storePath = directoryURL.URLByAppendingPathComponent(pathComponent ?? "")
-            print(storePath)
-            return storePath
-        }.progress { (bytesRead, totalBytesRead, totalBytesExpectedToRead) in
-            dispatch_async(dispatch_get_main_queue(), {
-                let progress = CGFloat(Float(totalBytesRead) / Float(totalBytesExpectedToRead))
-                self.downloadButton.updateProgress(progress)
-            })
-        }.response { (req, res, data, error) in
-            if let error = error {
-                print("download error: \(error)")
-            } else {
-                print("Download file successfully")
+        guard let currentTrack = self.channelSongDictionary[self.channels[1]]?.songs[0] else {
+            return
+        }
+        if DBFileManager.musicSHA256s.contains(currentTrack.sha256) {
+            print("music already exist")
+        } else {
+            sender.transformToPrograssBar()
+            Alamofire.download(.GET, currentTrack.mp3URL) { (tmpURL, res) -> NSURL in
+                let fileManager = NSFileManager.defaultManager()
+                let directoryURL = fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+                //let pathComponent = res.suggestedFilename
+                let fileName = "\(currentTrack.sha256).mp3"
+                let storePath = directoryURL.URLByAppendingPathComponent(fileName)
+                print("fileName: \(fileName)")
+                self.currentTrack?.filePath = storePath.path ?? ""
+                print("store at: \(self.currentTrack?.filePath)")
+                return storePath
+            }.progress { (bytesRead, totalBytesRead, totalBytesExpectedToRead) in
+                dispatch_async(dispatch_get_main_queue(), {
+                    let progress = CGFloat(Float(totalBytesRead) / Float(totalBytesExpectedToRead))
+                    self.downloadButton.updateProgress(progress)
+                })
+            }.response { (req, res, data, error) in
+                if let error = error {
+                    print("download error: \(error)")
+                } else {
+                    print("Download file successfully")
+                }
             }
         }
     }
@@ -61,7 +85,7 @@ class FMLoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initDownloadButton()
-        self.trackImageView.clipsToBounds = true
+        DBFileManager.getMP3FilePath()
         Alamofire.request(.GET, DBURL.getChannels).responseJSON {
             res in
             let json = JSON(res.result.value ?? [])
@@ -81,11 +105,26 @@ class FMLoginViewController: UIViewController {
                     } else {
                         let songList = DBSongList(withJSON: json)
                         self.channelSongDictionary[self.channels[1]] = songList
-                        let picURL = self.channelSongDictionary[self.channels[1]]?.songs[0].pictureURL
+                        guard let currentTrack = self.channelSongDictionary[self.channels[1]]?.songs[0] else {
+                            return
+                        }
+                        self.currentTrack = currentTrack
+                        let picURL = currentTrack.pictureURL
+                        let sha256 = currentTrack.sha256
+                        print("ssid: \(currentTrack.ssid)")
+                        print("sid: \(currentTrack.sid)")
+                        print("aid: \(currentTrack.aid)")
+                        if DBFileManager.musicSHA256s.contains(sha256) {
+                            print("sha256 contains")
+                            self.hasDownload = true
+                            self.downloadButton.setImage(UIImage(named: "tick"), forState: .Normal)
+                            self.downloadButton.setImage(UIImage(named: "tick"), forState: .Highlighted)
+                        }
                         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                             let trackImage = UIImage.download(withURL: picURL ?? "")
                             dispatch_async(dispatch_get_main_queue()) {
                                 self.trackImageView.image = trackImage
+                                self.trackLargeImageView.image = trackImage
                             }
                         }
                     }
@@ -96,8 +135,12 @@ class FMLoginViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        let width = self.trackImageView.frame.width
-        self.trackImageView.layer.cornerRadius = width / 2
+        let imageViewCornerRadius = self.trackImageView.frame.width / 2
+        self.trackImageView.layer.cornerRadius = imageViewCornerRadius
+        let largeImageViewCornerRadius = self.trackLargeImageView.frame.width / 2
+        self.trackLargeImageView.layer.cornerRadius = largeImageViewCornerRadius
+        self.trackImageView.clipsToBounds = true
+        self.trackLargeImageView.clipsToBounds = true
     }
 
     private func initDownloadButton() {

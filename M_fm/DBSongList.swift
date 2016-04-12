@@ -51,6 +51,8 @@ class DBSong: AnyObject {
     let albumtitle: String
     let like: Bool
 
+    var filePath: String = ""
+
     init(withJSON json: JSON) {
         album = json["album"].string ?? ""
         pictureURL = json["picture"].string ?? ""

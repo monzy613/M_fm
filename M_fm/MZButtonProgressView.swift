@@ -62,10 +62,10 @@ class MZButtonProgressView: UIButton {
     }
 
     func updateProgress(progress: CGFloat) {
-        print("progress: \(progress)")
+        //print("progress: \(progress * 100)%")
         self.progressLayer!.strokeEnd = progress
-        if progress == 1.0 {
-            print("progress full")
+        if progress >= 1.0 {
+            print("progress complete: \(progress * 100)%")
             self.progressLayer?.removeFromSuperlayer()
             self.setImage(self.endImage, forState: .Normal)
             let newHeight = self.frame.height * 3
@@ -83,6 +83,7 @@ class MZButtonProgressView: UIButton {
                 anim, finished in
                 if finished {
                     self.setImage(self.endImage, forState: .Normal)
+                    self.setImage(self.endImage, forState: .Highlighted)
                 }
             }
 
