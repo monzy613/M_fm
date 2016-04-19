@@ -10,7 +10,7 @@
 		245C5868E09609D9AA371DE6 /* Pods_M_fm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D97787D3EAF8D488396C8B91 /* Pods_M_fm.framework */; };
 		F41518501CBD3957002F5BF1 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F415184F1CBD3957002F5BF1 /* FileManager.swift */; };
 		F41518541CBD470C002F5BF1 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41518531CBD470C002F5BF1 /* Player.swift */; };
-		F465B5731CBB8EC100CD1295 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = F465B5721CBB8EC100CD1295 /* Network.swift */; };
+		F453C8E21CC6A0A000155701 /* FMNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = F453C8E11CC6A0A000155701 /* FMNetwork.swift */; };
 		F465B5761CBB91E800CD1295 /* FMLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F465B5751CBB91E800CD1295 /* FMLoginViewController.swift */; };
 		F465B5781CBB9A0E00CD1295 /* DBChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F465B5771CBB9A0E00CD1295 /* DBChannel.swift */; };
 		F465B57A1CBB9A2900CD1295 /* DBSongList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F465B5791CBB9A2900CD1295 /* DBSongList.swift */; };
@@ -29,7 +29,7 @@
 		F415184F1CBD3957002F5BF1 /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		F41518521CBD3F15002F5BF1 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		F41518531CBD470C002F5BF1 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
-		F465B5721CBB8EC100CD1295 /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		F453C8E11CC6A0A000155701 /* FMNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMNetwork.swift; sourceTree = "<group>"; };
 		F465B5751CBB91E800CD1295 /* FMLoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMLoginViewController.swift; sourceTree = "<group>"; };
 		F465B5771CBB9A0E00CD1295 /* DBChannel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBChannel.swift; sourceTree = "<group>"; };
 		F465B5791CBB9A2900CD1295 /* DBSongList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBSongList.swift; sourceTree = "<group>"; };
@@ -100,7 +100,7 @@
 		F465B5801CBBD81400CD1295 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
-				F465B5721CBB8EC100CD1295 /* Network.swift */,
+				F453C8E11CC6A0A000155701 /* FMNetwork.swift */,
 				F415184F1CBD3957002F5BF1 /* FileManager.swift */,
 				F41518521CBD3F15002F5BF1 /* MyPlayground.playground */,
 				F41518531CBD470C002F5BF1 /* Player.swift */,
@@ -268,9 +268,9 @@
 				F465B5761CBB91E800CD1295 /* FMLoginViewController.swift in Sources */,
 				F465B57F1CBBD52000CD1295 /* MZButtonProgressView.swift in Sources */,
 				F465B57A1CBB9A2900CD1295 /* DBSongList.swift in Sources */,
+				F453C8E21CC6A0A000155701 /* FMNetwork.swift in Sources */,
 				F465B57C1CBBD05300CD1295 /* UIImage+Downloader.swift in Sources */,
 				F465B5781CBB9A0E00CD1295 /* DBChannel.swift in Sources */,
-				F465B5731CBB8EC100CD1295 /* Network.swift in Sources */,
 				F497D1501CB8BF5F002811B4 /* AppDelegate.swift in Sources */,
 				F41518541CBD470C002F5BF1 /* Player.swift in Sources */,
 				F41518501CBD3957002F5BF1 /* FileManager.swift in Sources */,
